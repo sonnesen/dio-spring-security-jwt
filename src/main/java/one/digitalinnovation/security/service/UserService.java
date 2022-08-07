@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository repository;
-    private final PasswordEncoder encoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public void createUser(User user) {
         String pass = user.getPassword();
         //criptografando antes de salvar no banco
-        user.setPassword(encoder.encode(pass));
-        repository.save(user);
+        user.setPassword(passwordEncoder.encode(pass));
+        userRepository.save(user);
     }
 }

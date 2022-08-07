@@ -20,15 +20,15 @@ import java.util.Date;
 @RestController
 @RequiredArgsConstructor
 public class LoginController {
-    private final PasswordEncoder encoder;
-    private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
     private final SecurityProperties securityProperties;
 
     @PostMapping("/login")
     public LoginResponse logar(@RequestBody LoginRequest loginRequest) {
-        User user = repository.findByUsername(loginRequest.getUsername());
+        User user = userRepository.findByUsername(loginRequest.getUsername());
         if (user != null) {
-            boolean passwordOk = encoder.matches(loginRequest.getPassword(), user.getPassword());
+            boolean passwordOk = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
             if (!passwordOk) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos.");
             }

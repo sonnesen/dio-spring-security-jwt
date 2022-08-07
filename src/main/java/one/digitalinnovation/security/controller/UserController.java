@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService service;
+    private final UserService userService;
     private final ModelMapper modelMapper;
 
     @PostMapping
     public void postUser(@RequestBody UserRequest userRequest) {
         User user = modelMapper.map(userRequest, User.class);
-        service.createUser(user);
+        userService.createUser(user);
     }
 }
