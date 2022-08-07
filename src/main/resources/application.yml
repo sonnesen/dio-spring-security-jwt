@@ -1,0 +1,28 @@
+server:
+  error:
+    include-exception: false
+    include-message: always
+    include-stacktrace: never
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: postgres
+    password: secret123
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  sql:
+    init:
+      mode: always
+
+security:
+  config:
+    prefix: Bearer
+    key: SECRET_KEY
+    expiration: 3600000
+
+
