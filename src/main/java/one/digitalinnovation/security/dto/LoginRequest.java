@@ -3,7 +3,7 @@ package one.digitalinnovation.security.dto;
 import lombok.Data;
 
 @Data
-public class Login {
+public class LoginRequest {
     private String username;
     private String password;
 }

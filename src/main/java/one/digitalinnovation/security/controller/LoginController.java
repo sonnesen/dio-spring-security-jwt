@@ -1,8 +1,8 @@
 package one.digitalinnovation.security.controller;
 
 import lombok.RequiredArgsConstructor;
-import one.digitalinnovation.security.dto.Login;
-import one.digitalinnovation.security.dto.Sessao;
+import one.digitalinnovation.security.dto.LoginRequest;
+import one.digitalinnovation.security.dto.LoginResponse;
 import one.digitalinnovation.security.model.User;
 import one.digitalinnovation.security.repository.UserRepository;
 import one.digitalinnovation.security.security.JWTCreator;
@@ -24,23 +24,23 @@ public class LoginController {
     private final UserRepository repository;
 
     @PostMapping("/login")
-    public Sessao logar(@RequestBody Login login) {
-        User user = repository.findByUsername(login.getUsername());
+    public LoginResponse logar(@RequestBody LoginRequest loginRequest) {
+        User user = repository.findByUsername(loginRequest.getUsername());
         if (user != null) {
-            boolean passwordOk = encoder.matches(login.getPassword(), user.getPassword());
+            boolean passwordOk = encoder.matches(loginRequest.getPassword(), user.getPassword());
             if (!passwordOk) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos.");
             }
             //Estamos enviando um objeto Sessão para retornar mais informações do usuário
-            Sessao sessao = new Sessao();
-            sessao.setLogin(user.getUsername());
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setLogin(user.getUsername());
 
             JWTObject jwtObject = new JWTObject();
             jwtObject.setIssuedAt(new Date(System.currentTimeMillis()));
             jwtObject.setExpiration((new Date(System.currentTimeMillis() + SecurityConfig.EXPIRATION)));
             jwtObject.setRoles(user.getRoles());
-            sessao.setToken(JWTCreator.create(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
-            return sessao;
+            loginResponse.setToken(JWTCreator.create(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
+            return loginResponse;
         } else {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos.");
         }
