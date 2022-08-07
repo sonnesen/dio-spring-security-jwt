@@ -7,7 +7,7 @@ import one.digitalinnovation.security.model.User;
 import one.digitalinnovation.security.repository.UserRepository;
 import one.digitalinnovation.security.security.JWTCreator;
 import one.digitalinnovation.security.security.JWTObject;
-import one.digitalinnovation.security.security.SecurityConfig;
+import one.digitalinnovation.security.security.SecurityProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +22,7 @@ import java.util.Date;
 public class LoginController {
     private final PasswordEncoder encoder;
     private final UserRepository repository;
+    private final SecurityProperties securityProperties;
 
     @PostMapping("/login")
     public LoginResponse logar(@RequestBody LoginRequest loginRequest) {
@@ -37,9 +38,9 @@ public class LoginController {
 
             JWTObject jwtObject = new JWTObject();
             jwtObject.setIssuedAt(new Date(System.currentTimeMillis()));
-            jwtObject.setExpiration((new Date(System.currentTimeMillis() + SecurityConfig.EXPIRATION)));
+            jwtObject.setExpiration((new Date(System.currentTimeMillis() + securityProperties.getExpiration())));
             jwtObject.setRoles(user.getRoles());
-            loginResponse.setToken(JWTCreator.create(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
+            loginResponse.setToken(JWTCreator.create(securityProperties.getPrefix(), securityProperties.getKey(), jwtObject));
             return loginResponse;
         } else {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos.");
