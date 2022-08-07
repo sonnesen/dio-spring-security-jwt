@@ -8,10 +8,12 @@ import one.digitalinnovation.security.repository.UserRepository;
 import one.digitalinnovation.security.security.JWTCreator;
 import one.digitalinnovation.security.security.JWTObject;
 import one.digitalinnovation.security.security.SecurityConfig;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 
@@ -27,7 +29,7 @@ public class LoginController {
         if (user != null) {
             boolean passwordOk = encoder.matches(login.getPassword(), user.getPassword());
             if (!passwordOk) {
-                throw new RuntimeException("Senha inválida para o login: " + login.getUsername());
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos.");
             }
             //Estamos enviando um objeto Sessão para retornar mais informações do usuário
             Sessao sessao = new Sessao();
@@ -40,7 +42,7 @@ public class LoginController {
             sessao.setToken(JWTCreator.create(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
             return sessao;
         } else {
-            throw new RuntimeException("Erro ao tentar fazer login");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos.");
         }
     }
 }
