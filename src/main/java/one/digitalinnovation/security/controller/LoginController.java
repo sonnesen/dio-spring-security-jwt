@@ -19,8 +19,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class LoginController {
     private final PasswordEncoder encoder;
-
-    private final SecurityConfig securityConfig;
     private final UserRepository repository;
 
     @PostMapping("/login")
